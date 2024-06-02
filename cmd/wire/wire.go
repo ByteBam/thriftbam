@@ -10,6 +10,7 @@ import (
 	"github.com/ByteBam/thirftbam/biz/service"
 	"github.com/ByteBam/thirftbam/util/log"
 	"github.com/ByteBam/thirftbam/util/server/http"
+	"github.com/ByteBam/thirftbam/util/sid"
 	"github.com/google/wire"
 	"github.com/spf13/viper"
 )
@@ -38,11 +39,12 @@ func newApp(
 	)
 }
 
-func NewWire(viper2 *viper.Viper, logger *log.Logger) (*app.App, func(), error) {
+func NewWire(viper *viper.Viper, logger *log.Logger) (*app.App, func(), error) {
 	panic(wire.Build(
 		serviceSet,
 		handlerSet,
 		serverSet,
+		sid.NewSid,
 		newApp,
 	))
 }

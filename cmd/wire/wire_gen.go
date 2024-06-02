@@ -13,6 +13,7 @@ import (
 	"github.com/ByteBam/thirftbam/biz/service"
 	"github.com/ByteBam/thirftbam/util/log"
 	"github.com/ByteBam/thirftbam/util/server/http"
+	"github.com/ByteBam/thirftbam/util/sid"
 	"github.com/google/wire"
 	"github.com/spf13/viper"
 )
@@ -21,7 +22,8 @@ import (
 
 func NewWire(viper2 *viper.Viper, logger *log.Logger) (*app.App, func(), error) {
 	handlerHandler := handler.NewHandler(logger)
-	serviceService := service.NewService(logger)
+	sidSid := sid.NewSid()
+	serviceService := service.NewService(logger, sidSid)
 	analyzeService := service.NewAnalyzeService(serviceService)
 	analyzeHandler := handler.NewAnalyzeHandler(handlerHandler, analyzeService)
 	httpServer := server.NewHTTPServer(logger, viper2, analyzeHandler)
