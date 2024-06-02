@@ -1,0 +1,64 @@
+definitions:
+  v1.AnalyzeRequest:
+    properties:
+      access_token:
+        description: userId
+        type: string
+      id:
+        type: string
+      owner:
+        type: string
+      path:
+        type: string
+      ref:
+        type: string
+      repo:
+        type: string
+    required:
+    - id
+    - owner
+    - path
+    - repo
+    type: object
+host: localhost:8888
+info:
+  contact:
+    email: support@swagger.io
+    name: API Support
+    url: http://www.swagger.io/support
+  description: This is an IDL analyze server.
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: ByteBam thirftbam API
+  version: 1.0.0
+paths:
+  /api/v1/analyze:
+    post:
+      consumes:
+      - application/json
+      description: analyze IDL file
+      parameters:
+      - description: params
+        in: body
+        name: request
+        required: true
+        schema:
+          $ref: '#/definitions/v1.AnalyzeRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            type: string
+      summary: analyze handler
+      tags:
+      - analyze
+securityDefinitions:
+  Bearer:
+    in: header
+    name: Authorization
+    type: apiKey
+swagger: "2.0"

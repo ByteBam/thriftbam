@@ -12,6 +12,21 @@ import (
 	"go.uber.org/zap"
 )
 
+// @title						ByteBam thirftbam API
+// @version					1.0.0
+// @description				This is an IDL analyze server.
+// @termsOfService				http://swagger.io/terms/
+// @contact.name				API Support
+// @contact.url				http://www.swagger.io/support
+// @contact.email				support@swagger.io
+// @license.name				Apache 2.0
+// @license.url				http://www.apache.org/licenses/LICENSE-2.0.html
+// @host						localhost:8888
+// @securityDefinitions.apiKey	Bearer
+// @in							header
+// @name						Authorization
+// @externalDocs.description	OpenAPI
+// @externalDocs.url			https://swagger.io/resources/open-api/
 func main() {
 	var envConf = flag.String("conf", "biz/config/config.yaml", "config file path")
 	flag.Parse()
@@ -25,7 +40,7 @@ func main() {
 		panic(err)
 	}
 	logger.Info("server start", zap.String("addr", fmt.Sprintf("http://%s", conf.GetString("app.http.addr"))))
-	logger.Info("docs addr", zap.String("addr", fmt.Sprintf("http://%s/swagger/index.html", conf.GetString("app.http.host"))))
+	logger.Info("docs addr", zap.String("addr", fmt.Sprintf("http://%s/swagger/index.html", conf.GetString("app.http.addr"))))
 	if err = app.Run(context.Background()); err != nil {
 		panic(err)
 	}
