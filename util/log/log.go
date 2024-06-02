@@ -1,6 +1,7 @@
 package log
 
 import (
+	"context"
 	"github.com/spf13/viper"
 	"go.uber.org/zap"
 	"go.uber.org/zap/zapcore"
@@ -13,6 +14,19 @@ const ctxLoggerKey = "zapLogger"
 
 type Logger struct {
 	*zap.Logger
+}
+
+func (l *Logger) WithValue(ctx context.Context, fields ...zapcore.Field) context.Context {
+	return context.WithValue(ctx, ctxLoggerKey, l.WithContext(ctx).With(fields...))
+}
+
+func (l *Logger) WithContext(ctx context.Context) *Logger {
+	zl := ctx.Value(ctxLoggerKey)
+	ctxLogger, ok := zl.(*zap.Logger)
+	if ok {
+		return &Logger{ctxLogger}
+	}
+	return l
 }
 
 func NewLog(conf *viper.Viper) *Logger {
