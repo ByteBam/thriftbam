@@ -56,7 +56,7 @@ func (a analyzeService) Download(ctx context.Context, request *v1.AnalyzeRequest
 	}
 	defer reps.Body.Close()
 
-	if err = download.File(contents, request.Owner); err != nil {
+	if err = download.File(ctx, contents, request.Owner); err != nil {
 		return err
 	}
 

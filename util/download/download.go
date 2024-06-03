@@ -1,7 +1,7 @@
 package download
 
 import (
-	"fmt"
+	"context"
 	"io"
 	"net/http"
 	"os"
@@ -26,52 +26,70 @@ type Content struct {
 	Links       Links  `json:"_links"`
 }
 
-func File(contents []Content, dirPath string) error {
+func File(ctx context.Context, contents []Content, dirPath string) error {
+	// Communication between goroutines is implemented with the help of context
+	// if err != nil, it breaks
+	ctx, cancel := context.WithCancelCause(ctx)
+	defer cancel(nil)
+
+	// create the file storage path
 	if err := os.MkdirAll(dirPath, os.ModePerm); err != nil {
 		return err
 	}
 
 	var wg sync.WaitGroup
-	errCh := make(chan error, len(contents))
+	var once sync.Once
+	var err error
+	// Buffer 10, maximum concurrent downloads 10
+	results := make(chan int, 10)
 
-	for _, content := range contents {
+	for i, content := range contents {
+		// download queue + 1 and goroutine queue - 1
 		wg.Add(1)
-		go func(content Content) {
-			defer wg.Done()
+		results <- i
 
-			// 下载文件逻辑
-			resp, err := http.Get(content.DownloadURL)
-			if err != nil {
-				errCh <- err
+		go func(content Content) {
+			defer func() {
+				wg.Done()
+				<-results
+			}()
+
+			// download file raw
+			resp, e := http.Get(content.DownloadURL)
+			if e != nil {
+				// once.Do to make sure err written only once
+				// if err != nil, it breaks
+				once.Do(func() {
+					err = e
+					cancel(e)
+				})
 				return
 			}
 			defer resp.Body.Close()
 
-			file, err := os.OpenFile(filepath.Join(dirPath, content.Name), os.O_CREATE|os.O_WRONLY, 0644)
-			if err != nil {
-				errCh <- err
+			// creat file if the file not exists
+			file, e := os.OpenFile(filepath.Join(dirPath, content.Name), os.O_CREATE|os.O_WRONLY, 0644)
+			if e != nil {
+				once.Do(func() {
+					err = e
+					cancel(e)
+				})
 				return
 			}
 			defer file.Close()
 
-			if _, err := io.Copy(file, resp.Body); err != nil {
-				errCh <- err
+			// copy the file raw into a file form response body
+			if _, err = io.Copy(file, resp.Body); err != nil {
+				once.Do(func() {
+					err = e
+					cancel(e)
+				})
 				return
 			}
 		}(content)
 	}
 
 	wg.Wait()
-	close(errCh)
 
-	var errs []error
-	for err := range errCh {
-		errs = append(errs, err)
-	}
-
-	if len(errs) > 0 {
-		return fmt.Errorf("encountered errors: %v", errs)
-	}
-
-	return nil
+	return err
 }
