@@ -42,6 +42,7 @@ func File(ctx context.Context, contents []Content, dirPath string) error {
 	var err error
 	// Buffer 10, maximum concurrent downloads 10
 	results := make(chan int, 10)
+	defer close(results)
 
 	for i, content := range contents {
 		// download queue + 1 and goroutine queue - 1
@@ -50,8 +51,8 @@ func File(ctx context.Context, contents []Content, dirPath string) error {
 
 		go func(content Content) {
 			defer func() {
-				wg.Done()
 				<-results
+				wg.Done()
 			}()
 
 			// download file raw

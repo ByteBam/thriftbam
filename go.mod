@@ -4,7 +4,10 @@ go 1.22.3
 
 require (
 	github.com/bwmarrin/snowflake v0.3.0
+	github.com/bytedance/gopkg v0.0.0-20220413063733-65bf48ffb3a7
+	github.com/bytedance/sonic v1.8.1
 	github.com/cloudwego/hertz v0.9.0
+	github.com/cloudwego/thriftgo v0.3.12
 	github.com/google/wire v0.6.0
 	github.com/hertz-contrib/swagger v0.1.0
 	github.com/spf13/viper v1.18.2
@@ -17,8 +20,6 @@ require (
 require (
 	github.com/KyleBanks/depth v1.2.1 // indirect
 	github.com/bytedance/go-tagexpr/v2 v2.9.2 // indirect
-	github.com/bytedance/gopkg v0.0.0-20220413063733-65bf48ffb3a7 // indirect
-	github.com/bytedance/sonic v1.8.1 // indirect
 	github.com/chenzhuoyu/base64x v0.0.0-20221115062448-fe3a3abad311 // indirect
 	github.com/cloudwego/netpoll v0.5.0 // indirect
 	github.com/fsnotify/fsnotify v1.7.0 // indirect

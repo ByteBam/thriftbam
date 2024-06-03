@@ -46,19 +46,19 @@ func (h *AnalyzeHandler) Analyze(ctx context.Context, c *app.RequestContext) {
 		return
 	}
 
-	_, err = h.AnalyzeService.AnalyzeFile(ctx, req.Owner)
+	nums, err := h.AnalyzeService.Analyze(ctx, req.Owner)
 	if err != nil {
-		h.logger.WithContext(ctx).Error("AnalyzeService.AnalyzeFile error", zap.Error(err))
+		h.logger.WithContext(ctx).Error("AnalyzeService.Analyze error", zap.Error(err))
 		v1.HandleError(c, http.StatusInternalServerError, v1.ErrServiceError, err.Error())
 		return
 	}
 
-	go func() {
-		err := h.AnalyzeService.DeleteFile(ctx, req.Owner)
+	go func(path string) {
+		err = h.AnalyzeService.Delete(ctx, path)
 		if err != nil {
 			h.logger.WithContext(ctx).Error("AnalyzeService.DeleteFile error", zap.Error(err))
 		}
-	}()
+	}(req.Owner)
 
-	v1.HandleSuccess(c, nil)
+	v1.HandleSuccess(c, nums)
 }
