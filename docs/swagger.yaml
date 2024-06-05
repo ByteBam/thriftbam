@@ -1,10 +1,7 @@
 definitions:
   v1.AnalyzeRequest:
     properties:
-      access_token:
-        description: userId
-        type: string
-      id:
+      branch_id:
         type: string
       owner:
         type: string
@@ -14,11 +11,22 @@ definitions:
         type: string
       repo:
         type: string
+      user_id:
+        type: string
     required:
-    - id
+    - branch_id
     - owner
     - path
     - repo
+    - user_id
+    type: object
+  v1.Response:
+    properties:
+      code:
+        type: integer
+      data: {}
+      message:
+        type: string
     type: object
 host: localhost:8888
 info:
@@ -52,7 +60,7 @@ paths:
         "200":
           description: OK
           schema:
-            type: string
+            $ref: '#/definitions/v1.Response'
       summary: analyze handler
       tags:
       - analyze

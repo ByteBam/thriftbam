@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// Package plugin defines the interface for implementing thriftgo plugins.
+// Package plugin defines the interface_info for implementing thriftgo plugins.
 //
 // A plugin is a stand-alone executable that reads input from standard input and
 // writes out generated contents to the standard output while logging any warning

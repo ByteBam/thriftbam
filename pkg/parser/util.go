@@ -16,7 +16,7 @@ package parser
 
 import (
 	"fmt"
-	"github.com/ByteBam/thirftbam/util/dir_utils"
+	"github.com/ByteBam/thirftbam/pkg/dir_utils"
 	"path/filepath"
 	"strings"
 )

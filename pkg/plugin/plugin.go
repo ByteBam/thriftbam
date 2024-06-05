@@ -41,7 +41,7 @@ type Option struct {
 	Desc string
 }
 
-// Desc can be used to describes the interface of a plugin or a generator backend.
+// Desc can be used to describes the interface_info of a plugin or a generator backend.
 type Desc struct {
 	Name    string
 	Options []Option
@@ -130,12 +130,12 @@ type external struct {
 	path string
 }
 
-// Name implements the Plugin interface.
+// Name implements the Plugin interface_info.
 func (e *external) Name() string {
 	return e.name
 }
 
-// Execute implements the Plugin interface.
+// Execute implements the Plugin interface_info.
 func (e *external) Execute(req *Request) (res *Response) {
 	data, err := MarshalRequest(req)
 	if err != nil {

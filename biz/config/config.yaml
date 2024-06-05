@@ -11,3 +11,15 @@ log:
   max_age: 7
   max_size: 1024
   compress: true
+
+data:
+  db:
+    user:
+      dsn: root:ndwmd1230@tcp(1.94.38.238:3306)/newbam?charset=utf8mb4&parseTime=True&loc=Local
+
+  redis:
+    addr: 114.116.241.37:6379
+    password: bam595.
+    db: 0
+    read_timeout: 0.2s
+    write_timeout: 0.2s

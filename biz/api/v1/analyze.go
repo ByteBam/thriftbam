@@ -1,14 +1,13 @@
 package v1
 
 type AnalyzeRequest struct {
-	Id          string `json:"id" binding:"required"`
-	AccessToken string `json:"access_token"` // userId
-	Owner       string `json:"owner" binding:"required"`
-	Repo        string `json:"repo" binding:"required"`
-	Path        string `json:"path" binding:"required"`
-	Ref         string `json:"ref"`
+	BranchId string `json:"branch_id" binding:"required,len=19"`
+	UserId   string `json:"user_id" binding:"required,len=19"`
+	Owner    string `json:"owner" binding:"required"`
+	Repo     string `json:"repo" binding:"required"`
+	Path     string `json:"path" binding:"required"`
 }
 
-type Resp struct {
+type AnalyzeResponse struct {
 	InterfaceNum int `json:"nums"`
 }

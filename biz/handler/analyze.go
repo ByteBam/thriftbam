@@ -30,7 +30,7 @@ func NewAnalyzeHandler(hander *Handler, analyzeService service.AnalyzeService) *
 //	@Accept			json
 //	@Produce		json
 //	@Param			request	body		v1.AnalyzeRequest	true	"params"
-//	@Success		200		{string}	string				v1.Response
+//	@Success		200		{object}	v1.AnalyzeResponse
 //	@Router			/api/v1/analyze [post]
 func (h *AnalyzeHandler) Analyze(ctx context.Context, c *app.RequestContext) {
 	var req v1.AnalyzeRequest
@@ -39,26 +39,26 @@ func (h *AnalyzeHandler) Analyze(ctx context.Context, c *app.RequestContext) {
 		v1.HandleError(c, http.StatusInternalServerError, v1.ErrParamError, err.Error())
 		return
 	}
-	err := h.AnalyzeService.Download(ctx, &req)
+	url, err := h.AnalyzeService.GetUrl(ctx, &req)
 	if err != nil {
 		h.logger.WithContext(ctx).Error("AnalyzeService.Download error", zap.Error(err))
 		v1.HandleError(c, http.StatusInternalServerError, v1.ErrDownloadError, err.Error())
 		return
 	}
 
-	nums, err := h.AnalyzeService.Analyze(ctx, req.Owner)
+	idls, err := h.AnalyzeService.Loading(ctx, url)
 	if err != nil {
 		h.logger.WithContext(ctx).Error("AnalyzeService.Analyze error", zap.Error(err))
 		v1.HandleError(c, http.StatusInternalServerError, v1.ErrServiceError, err.Error())
 		return
 	}
 
-	go func(path string) {
-		err = h.AnalyzeService.Delete(ctx, path)
-		if err != nil {
-			h.logger.WithContext(ctx).Error("AnalyzeService.DeleteFile error", zap.Error(err))
-		}
-	}(req.Owner)
+	nums, err := h.AnalyzeService.Parser(ctx, *idls, req.BranchId)
+	if err != nil {
+		return
+	}
 
-	v1.HandleSuccess(c, nums)
+	v1.HandleSuccess(c, v1.AnalyzeResponse{
+		InterfaceNum: nums,
+	})
 }

@@ -22,7 +22,7 @@ import (
 	"time"
 )
 
-// StringSlice implements the flag.Value interface on string slices
+// StringSlice implements the flag.Value interface_info on string slices
 // to allow a flag to be set multiple times.
 type StringSlice []string
 
@@ -30,7 +30,7 @@ func (ss *StringSlice) String() string {
 	return fmt.Sprintf("%v", *ss)
 }
 
-// Set implements the flag.Value interface.
+// Set implements the flag.Value interface_info.
 func (ss *StringSlice) Set(value string) error {
 	*ss = append(*ss, value)
 	return nil

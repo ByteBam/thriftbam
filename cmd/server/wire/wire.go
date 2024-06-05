@@ -6,13 +6,23 @@ package wire
 import (
 	"github.com/ByteBam/thirftbam/biz/app"
 	"github.com/ByteBam/thirftbam/biz/handler"
+	"github.com/ByteBam/thirftbam/biz/repository"
 	"github.com/ByteBam/thirftbam/biz/server"
 	"github.com/ByteBam/thirftbam/biz/service"
-	"github.com/ByteBam/thirftbam/util/log"
-	"github.com/ByteBam/thirftbam/util/server/http"
-	"github.com/ByteBam/thirftbam/util/sid"
+	"github.com/ByteBam/thirftbam/pkg/util/log"
+	"github.com/ByteBam/thirftbam/pkg/util/server/http"
+	"github.com/ByteBam/thirftbam/pkg/util/sid"
 	"github.com/google/wire"
 	"github.com/spf13/viper"
+)
+
+var repositorySet = wire.NewSet(
+	repository.NewDB,
+	repository.NewRedis,
+	repository.NewRepository,
+	repository.NewTransaction,
+	repository.NewQueryRepository,
+	repository.NewCaptchaRepository,
 )
 
 var serviceSet = wire.NewSet(
@@ -41,6 +51,7 @@ func newApp(
 
 func NewWire(viper *viper.Viper, logger *log.Logger) (*app.App, func(), error) {
 	panic(wire.Build(
+		repositorySet,
 		serviceSet,
 		handlerSet,
 		serverSet,

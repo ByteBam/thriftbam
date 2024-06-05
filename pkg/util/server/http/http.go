@@ -2,7 +2,7 @@ package http
 
 import (
 	"context"
-	"github.com/ByteBam/thirftbam/util/log"
+	"github.com/ByteBam/thirftbam/pkg/util/log"
 	"github.com/cloudwego/hertz/pkg/app/server"
 	"time"
 )

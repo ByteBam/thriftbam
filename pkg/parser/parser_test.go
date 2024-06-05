@@ -52,7 +52,7 @@ exception myerror {
 } (hello = "world")
 
 service test_service {
-	i32 (what = "response-annotation") method() (what = "method-annotation")
+	s (what = "response-annotation") method() (what = "method-annotation")
 } (
 	what.is.this = "service.annotation",
 	empty.annotation = "",

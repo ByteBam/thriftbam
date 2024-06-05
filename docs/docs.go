@@ -52,7 +52,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "type": "string"
+                            "$ref": "#/definitions/v1.Response"
                         }
                     }
                 }
@@ -63,17 +63,14 @@ const docTemplate = `{
         "v1.AnalyzeRequest": {
             "type": "object",
             "required": [
-                "id",
+                "branch_id",
                 "owner",
                 "path",
-                "repo"
+                "repo",
+                "user_id"
             ],
             "properties": {
-                "access_token": {
-                    "description": "userId",
-                    "type": "string"
-                },
-                "id": {
+                "branch_id": {
                     "type": "string"
                 },
                 "owner": {
@@ -86,6 +83,21 @@ const docTemplate = `{
                     "type": "string"
                 },
                 "repo": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "string"
+                }
+            }
+        },
+        "v1.Response": {
+            "type": "object",
+            "properties": {
+                "code": {
+                    "type": "integer"
+                },
+                "data": {},
+                "message": {
                     "type": "string"
                 }
             }

@@ -9,11 +9,12 @@ package wire
 import (
 	"github.com/ByteBam/thirftbam/biz/app"
 	"github.com/ByteBam/thirftbam/biz/handler"
+	"github.com/ByteBam/thirftbam/biz/repository"
 	"github.com/ByteBam/thirftbam/biz/server"
 	"github.com/ByteBam/thirftbam/biz/service"
-	"github.com/ByteBam/thirftbam/util/log"
-	"github.com/ByteBam/thirftbam/util/server/http"
-	"github.com/ByteBam/thirftbam/util/sid"
+	"github.com/ByteBam/thirftbam/pkg/util/log"
+	"github.com/ByteBam/thirftbam/pkg/util/server/http"
+	"github.com/ByteBam/thirftbam/pkg/util/sid"
 	"github.com/google/wire"
 	"github.com/spf13/viper"
 )
@@ -23,8 +24,14 @@ import (
 func NewWire(viper2 *viper.Viper, logger *log.Logger) (*app.App, func(), error) {
 	handlerHandler := handler.NewHandler(logger)
 	sidSid := sid.NewSid()
-	serviceService := service.NewService(logger, sidSid)
-	analyzeService := service.NewAnalyzeService(serviceService)
+	db := repository.NewDB(viper2, logger)
+	client := repository.NewRedis(viper2)
+	repositoryRepository := repository.NewRepository(logger, db, client)
+	transaction := repository.NewTransaction(repositoryRepository)
+	serviceService := service.NewService(logger, sidSid, transaction)
+	queryRepository := repository.NewQueryRepository(repositoryRepository)
+	captchaRepository := repository.NewCaptchaRepository(repositoryRepository)
+	analyzeService := service.NewAnalyzeService(serviceService, queryRepository, captchaRepository)
 	analyzeHandler := handler.NewAnalyzeHandler(handlerHandler, analyzeService)
 	httpServer := server.NewHTTPServer(logger, viper2, analyzeHandler)
 	appApp := newApp(httpServer, viper2)
@@ -33,6 +40,8 @@ func NewWire(viper2 *viper.Viper, logger *log.Logger) (*app.App, func(), error) 
 }
 
 // wire.go:
+
+var repositorySet = wire.NewSet(repository.NewDB, repository.NewRedis, repository.NewRepository, repository.NewTransaction, repository.NewQueryRepository, repository.NewCaptchaRepository)
 
 var serviceSet = wire.NewSet(service.NewService, service.NewAnalyzeService)
 

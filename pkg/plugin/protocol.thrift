@@ -14,7 +14,7 @@
 
 namespace * plugin
 
-include "../parser/AST.thrift"
+include "../parser"
 
 // Request is the input of a plugin serialized in binary protocol.
 struct Request {
@@ -53,8 +53,8 @@ struct Generated {
     3: optional string InsertionPoint,
 }
 
-// Response is the output of a plugin serialized in binary protocol.
-struct Response {
+// AnalyzeResponse is the output of a plugin serialized in binary protocol.
+struct AnalyzeResponse {
     // Error message.
     1: optional string Error,
 
