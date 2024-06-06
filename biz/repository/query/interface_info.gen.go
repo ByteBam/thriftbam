@@ -6,6 +6,7 @@ package query
 
 import (
 	"context"
+	gen2 "github.com/ByteBam/thirftbam/biz/model/gen"
 
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -15,15 +16,13 @@ import (
 	"gorm.io/gen/field"
 
 	"gorm.io/plugin/dbresolver"
-
-	"github.com/ByteBam/thirftbam/biz/model"
 )
 
 func newInterfaceInfo(db *gorm.DB, opts ...gen.DOOption) interfaceInfo {
 	_interfaceInfo := interfaceInfo{}
 
 	_interfaceInfo.interfaceInfoDo.UseDB(db, opts...)
-	_interfaceInfo.interfaceInfoDo.UseModel(&model.InterfaceInfo{})
+	_interfaceInfo.interfaceInfoDo.UseModel(&gen2.InterfaceInfo{})
 
 	tableName := _interfaceInfo.interfaceInfoDo.TableName()
 	_interfaceInfo.ALL = field.NewAsterisk(tableName)
@@ -165,17 +164,17 @@ type IInterfaceInfoDo interface {
 	Count() (count int64, err error)
 	Scopes(funcs ...func(gen.Dao) gen.Dao) IInterfaceInfoDo
 	Unscoped() IInterfaceInfoDo
-	Create(values ...*model.InterfaceInfo) error
-	CreateInBatches(values []*model.InterfaceInfo, batchSize int) error
-	Save(values ...*model.InterfaceInfo) error
-	First() (*model.InterfaceInfo, error)
-	Take() (*model.InterfaceInfo, error)
-	Last() (*model.InterfaceInfo, error)
-	Find() ([]*model.InterfaceInfo, error)
-	FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*model.InterfaceInfo, err error)
-	FindInBatches(result *[]*model.InterfaceInfo, batchSize int, fc func(tx gen.Dao, batch int) error) error
+	Create(values ...*gen2.InterfaceInfo) error
+	CreateInBatches(values []*gen2.InterfaceInfo, batchSize int) error
+	Save(values ...*gen2.InterfaceInfo) error
+	First() (*gen2.InterfaceInfo, error)
+	Take() (*gen2.InterfaceInfo, error)
+	Last() (*gen2.InterfaceInfo, error)
+	Find() ([]*gen2.InterfaceInfo, error)
+	FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*gen2.InterfaceInfo, err error)
+	FindInBatches(result *[]*gen2.InterfaceInfo, batchSize int, fc func(tx gen.Dao, batch int) error) error
 	Pluck(column field.Expr, dest interface{}) error
-	Delete(...*model.InterfaceInfo) (info gen.ResultInfo, err error)
+	Delete(...*gen2.InterfaceInfo) (info gen.ResultInfo, err error)
 	Update(column field.Expr, value interface{}) (info gen.ResultInfo, err error)
 	UpdateSimple(columns ...field.AssignExpr) (info gen.ResultInfo, err error)
 	Updates(value interface{}) (info gen.ResultInfo, err error)
@@ -187,9 +186,9 @@ type IInterfaceInfoDo interface {
 	Assign(attrs ...field.AssignExpr) IInterfaceInfoDo
 	Joins(fields ...field.RelationField) IInterfaceInfoDo
 	Preload(fields ...field.RelationField) IInterfaceInfoDo
-	FirstOrInit() (*model.InterfaceInfo, error)
-	FirstOrCreate() (*model.InterfaceInfo, error)
-	FindByPage(offset int, limit int) (result []*model.InterfaceInfo, count int64, err error)
+	FirstOrInit() (*gen2.InterfaceInfo, error)
+	FirstOrCreate() (*gen2.InterfaceInfo, error)
+	FindByPage(offset int, limit int) (result []*gen2.InterfaceInfo, count int64, err error)
 	ScanByPage(result interface{}, offset int, limit int) (count int64, err error)
 	Scan(result interface{}) (err error)
 	Returning(value interface{}, columns ...string) IInterfaceInfoDo
@@ -289,57 +288,57 @@ func (i interfaceInfoDo) Unscoped() IInterfaceInfoDo {
 	return i.withDO(i.DO.Unscoped())
 }
 
-func (i interfaceInfoDo) Create(values ...*model.InterfaceInfo) error {
+func (i interfaceInfoDo) Create(values ...*gen2.InterfaceInfo) error {
 	if len(values) == 0 {
 		return nil
 	}
 	return i.DO.Create(values)
 }
 
-func (i interfaceInfoDo) CreateInBatches(values []*model.InterfaceInfo, batchSize int) error {
+func (i interfaceInfoDo) CreateInBatches(values []*gen2.InterfaceInfo, batchSize int) error {
 	return i.DO.CreateInBatches(values, batchSize)
 }
 
 // Save : !!! underlying implementation is different with GORM
 // The method is equivalent to executing the statement: db.Clauses(clause.OnConflict{UpdateAll: true}).Create(values)
-func (i interfaceInfoDo) Save(values ...*model.InterfaceInfo) error {
+func (i interfaceInfoDo) Save(values ...*gen2.InterfaceInfo) error {
 	if len(values) == 0 {
 		return nil
 	}
 	return i.DO.Save(values)
 }
 
-func (i interfaceInfoDo) First() (*model.InterfaceInfo, error) {
+func (i interfaceInfoDo) First() (*gen2.InterfaceInfo, error) {
 	if result, err := i.DO.First(); err != nil {
 		return nil, err
 	} else {
-		return result.(*model.InterfaceInfo), nil
+		return result.(*gen2.InterfaceInfo), nil
 	}
 }
 
-func (i interfaceInfoDo) Take() (*model.InterfaceInfo, error) {
+func (i interfaceInfoDo) Take() (*gen2.InterfaceInfo, error) {
 	if result, err := i.DO.Take(); err != nil {
 		return nil, err
 	} else {
-		return result.(*model.InterfaceInfo), nil
+		return result.(*gen2.InterfaceInfo), nil
 	}
 }
 
-func (i interfaceInfoDo) Last() (*model.InterfaceInfo, error) {
+func (i interfaceInfoDo) Last() (*gen2.InterfaceInfo, error) {
 	if result, err := i.DO.Last(); err != nil {
 		return nil, err
 	} else {
-		return result.(*model.InterfaceInfo), nil
+		return result.(*gen2.InterfaceInfo), nil
 	}
 }
 
-func (i interfaceInfoDo) Find() ([]*model.InterfaceInfo, error) {
+func (i interfaceInfoDo) Find() ([]*gen2.InterfaceInfo, error) {
 	result, err := i.DO.Find()
-	return result.([]*model.InterfaceInfo), err
+	return result.([]*gen2.InterfaceInfo), err
 }
 
-func (i interfaceInfoDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*model.InterfaceInfo, err error) {
-	buf := make([]*model.InterfaceInfo, 0, batchSize)
+func (i interfaceInfoDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*gen2.InterfaceInfo, err error) {
+	buf := make([]*gen2.InterfaceInfo, 0, batchSize)
 	err = i.DO.FindInBatches(&buf, batchSize, func(tx gen.Dao, batch int) error {
 		defer func() { results = append(results, buf...) }()
 		return fc(tx, batch)
@@ -347,7 +346,7 @@ func (i interfaceInfoDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch in
 	return results, err
 }
 
-func (i interfaceInfoDo) FindInBatches(result *[]*model.InterfaceInfo, batchSize int, fc func(tx gen.Dao, batch int) error) error {
+func (i interfaceInfoDo) FindInBatches(result *[]*gen2.InterfaceInfo, batchSize int, fc func(tx gen.Dao, batch int) error) error {
 	return i.DO.FindInBatches(result, batchSize, fc)
 }
 
@@ -373,23 +372,23 @@ func (i interfaceInfoDo) Preload(fields ...field.RelationField) IInterfaceInfoDo
 	return &i
 }
 
-func (i interfaceInfoDo) FirstOrInit() (*model.InterfaceInfo, error) {
+func (i interfaceInfoDo) FirstOrInit() (*gen2.InterfaceInfo, error) {
 	if result, err := i.DO.FirstOrInit(); err != nil {
 		return nil, err
 	} else {
-		return result.(*model.InterfaceInfo), nil
+		return result.(*gen2.InterfaceInfo), nil
 	}
 }
 
-func (i interfaceInfoDo) FirstOrCreate() (*model.InterfaceInfo, error) {
+func (i interfaceInfoDo) FirstOrCreate() (*gen2.InterfaceInfo, error) {
 	if result, err := i.DO.FirstOrCreate(); err != nil {
 		return nil, err
 	} else {
-		return result.(*model.InterfaceInfo), nil
+		return result.(*gen2.InterfaceInfo), nil
 	}
 }
 
-func (i interfaceInfoDo) FindByPage(offset int, limit int) (result []*model.InterfaceInfo, count int64, err error) {
+func (i interfaceInfoDo) FindByPage(offset int, limit int) (result []*gen2.InterfaceInfo, count int64, err error) {
 	result, err = i.Offset(offset).Limit(limit).Find()
 	if err != nil {
 		return
@@ -418,7 +417,7 @@ func (i interfaceInfoDo) Scan(result interface{}) (err error) {
 	return i.DO.Scan(result)
 }
 
-func (i interfaceInfoDo) Delete(models ...*model.InterfaceInfo) (result gen.ResultInfo, err error) {
+func (i interfaceInfoDo) Delete(models ...*gen2.InterfaceInfo) (result gen.ResultInfo, err error) {
 	return i.DO.Delete(models)
 }
 

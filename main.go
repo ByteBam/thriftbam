@@ -7,8 +7,8 @@ import (
 	"flag"
 	"fmt"
 	"github.com/ByteBam/thirftbam/cmd/server/wire"
-	"github.com/ByteBam/thirftbam/pkg/util/config"
-	"github.com/ByteBam/thirftbam/pkg/util/log"
+	"github.com/ByteBam/thirftbam/pkg/utils/config"
+	"github.com/ByteBam/thirftbam/pkg/utils/log"
 	"go.uber.org/zap"
 )
 

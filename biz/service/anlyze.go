@@ -5,11 +5,11 @@ import (
 	"errors"
 	"fmt"
 	"github.com/ByteBam/thirftbam/biz/api/v1"
-	"github.com/ByteBam/thirftbam/biz/model"
+	"github.com/ByteBam/thirftbam/biz/model/gen"
 	"github.com/ByteBam/thirftbam/biz/repository"
 	"github.com/ByteBam/thirftbam/pkg/parser"
-	"github.com/ByteBam/thirftbam/pkg/util/download"
-	"github.com/ByteBam/thirftbam/pkg/util/interface_info"
+	"github.com/ByteBam/thirftbam/pkg/utils/download"
+	"github.com/ByteBam/thirftbam/pkg/utils/interface_info"
 	"github.com/bytedance/sonic"
 	"io"
 	"net/http"
@@ -135,11 +135,11 @@ func (a *analyzeService) Parser(ctx context.Context, idls []download.IDL, branch
 	if ast == nil {
 		return 0, fmt.Errorf("no services found")
 	}
-	// TODO The parameters of the build request and the corresponding parameters are stored in the database
 	var count int
 	err = a.tm.Transaction(ctx, func(ctx context.Context) error {
-		var module model.ModuleInfo
-		var interfaceInfo model.InterfaceInfo
+		var module gen.ModuleInfo
+		var interfaceInfo gen.InterfaceInfo
+		// module
 		for _, service := range ast.Services {
 			module.ID = a.sid.GenString()
 			module.BranchID = branchId
@@ -149,6 +149,7 @@ func (a *analyzeService) Parser(ctx context.Context, idls []download.IDL, branch
 			if err = a.db.CreateModule(ctx, &module); err != nil {
 				return err
 			}
+			// interface
 			for _, function := range service.Functions {
 				interfaceInfo.ID = a.sid.GenString()
 				interfaceInfo.ModuleID = module.ID
@@ -159,11 +160,12 @@ func (a *analyzeService) Parser(ctx context.Context, idls []download.IDL, branch
 				}
 				interfaceInfo.Method = method
 				interfaceInfo.URL = url
-				parameter, err := interface_info.GetParameter(&structure, function)
+				parameter, err := interface_info.GetParameter(&structure, function.GetArguments())
 				if err != nil {
 					return err
 				}
 				interfaceInfo.Parameter = string(*parameter)
+				// TODO optimize the response parameters format
 				response, ok := structure.Load(function.GetFunctionType().GetName())
 				if !ok {
 					interfaceInfo.Response = function.GetFunctionType().GetName()
@@ -181,6 +183,7 @@ func (a *analyzeService) Parser(ctx context.Context, idls []download.IDL, branch
 		}
 		return nil
 	})
+
 	if err != nil {
 		return 0, err
 	}

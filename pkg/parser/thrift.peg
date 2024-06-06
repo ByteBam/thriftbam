@@ -19,7 +19,7 @@ NamespaceScope <- Skip
     <'*'> Indent*
     / Identifier
 
-Definition <- ReservedComments Skip (Const / Typedef / Enum / Service / Struct / Union / Exception) Annotations? SkipLine
+Definition <- ReservedComments Skip (Const / Typedef / Enum / Service / Structure / Union / Exception) Annotations? SkipLine
 
 Const <- CONST FieldType Identifier EQUAL ConstValue ListSeparator?
 
@@ -29,23 +29,23 @@ Enum  <- ENUM Identifier LWING (ReservedComments Identifier (EQUAL IntConstant)?
 
 Service <- SERVICE Identifier ( EXTENDS Identifier )? LWING Function* RWING
 
-Struct <- STRUCT Identifier LWING Field* RWING
+Structure <- STRUCT Identifier LWING Structure* RWING
 
-Union <- UNION Identifier LWING Field* RWING
+Union <- UNION Identifier LWING Structure* RWING
 
-Exception <- EXCEPTION Identifier LWING Field* RWING
+Exception <- EXCEPTION Identifier LWING Structure* RWING
 
-Field <- ReservedComments Skip FieldId? FieldReq? FieldType Identifier (EQUAL ConstValue)? Annotations? ListSeparator? ReservedEndLineComments SkipLine
+Structure <- ReservedComments Skip FieldId? FieldReq? FieldType Identifier (EQUAL ConstValue)? Annotations? ListSeparator? ReservedEndLineComments SkipLine
 
 FieldId <- Skip IntConstant COLON Indent*
 
 FieldReq <- Skip <('required' / 'optional')> Indent*
 
-Function  <- ReservedComments Skip ONEWAY? FunctionType Identifier LPAR Field* RPAR Throws? Annotations? ListSeparator? SkipLine
+Function  <- ReservedComments Skip ONEWAY? FunctionType Identifier LPAR Structure* RPAR Throws? Annotations? ListSeparator? SkipLine
 
 FunctionType  <- VOID / FieldType
 
-Throws <- THROWS LPAR Field* RPAR
+Throws <- THROWS LPAR Structure* RPAR
 
 FieldType  <- (ContainerType / BaseType / Identifier) Annotations?
 

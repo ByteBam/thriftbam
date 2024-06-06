@@ -30,7 +30,7 @@ enum Category {
     List
     Set
     Enum
-    Struct
+    Structure
     Union
     Exception
     Typedef
@@ -136,7 +136,7 @@ enum FieldType {
     Optional
 }
 
-struct Field {
+struct Structure {
     1: i32 ID
     2: string Name
     3: FieldType Requiredness
@@ -149,7 +149,7 @@ struct Field {
 struct StructLike {
     1: string Category // "struct", "union" or "exception"
     2: string Name
-    3: list<Field> Fields
+    3: list<Structure> Fields
     4: Annotations Annotations
     5: string ReservedComments
 }
@@ -159,8 +159,8 @@ struct Function {
     2: bool Oneway
     3: bool Void
     4: optional Type FunctionType
-    5: list<Field> Arguments
-    6: list<Field> Throws
+    5: list<Structure> Arguments
+    6: list<Structure> Throws
     7: Annotations Annotations
     8: string ReservedComments
 }

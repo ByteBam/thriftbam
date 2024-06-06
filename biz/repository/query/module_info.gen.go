@@ -6,6 +6,7 @@ package query
 
 import (
 	"context"
+	gen2 "github.com/ByteBam/thirftbam/biz/model/gen"
 
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -15,15 +16,13 @@ import (
 	"gorm.io/gen/field"
 
 	"gorm.io/plugin/dbresolver"
-
-	"github.com/ByteBam/thirftbam/biz/model"
 )
 
 func newModuleInfo(db *gorm.DB, opts ...gen.DOOption) moduleInfo {
 	_moduleInfo := moduleInfo{}
 
 	_moduleInfo.moduleInfoDo.UseDB(db, opts...)
-	_moduleInfo.moduleInfoDo.UseModel(&model.ModuleInfo{})
+	_moduleInfo.moduleInfoDo.UseModel(&gen2.ModuleInfo{})
 
 	tableName := _moduleInfo.moduleInfoDo.TableName()
 	_moduleInfo.ALL = field.NewAsterisk(tableName)
@@ -151,17 +150,17 @@ type IModuleInfoDo interface {
 	Count() (count int64, err error)
 	Scopes(funcs ...func(gen.Dao) gen.Dao) IModuleInfoDo
 	Unscoped() IModuleInfoDo
-	Create(values ...*model.ModuleInfo) error
-	CreateInBatches(values []*model.ModuleInfo, batchSize int) error
-	Save(values ...*model.ModuleInfo) error
-	First() (*model.ModuleInfo, error)
-	Take() (*model.ModuleInfo, error)
-	Last() (*model.ModuleInfo, error)
-	Find() ([]*model.ModuleInfo, error)
-	FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*model.ModuleInfo, err error)
-	FindInBatches(result *[]*model.ModuleInfo, batchSize int, fc func(tx gen.Dao, batch int) error) error
+	Create(values ...*gen2.ModuleInfo) error
+	CreateInBatches(values []*gen2.ModuleInfo, batchSize int) error
+	Save(values ...*gen2.ModuleInfo) error
+	First() (*gen2.ModuleInfo, error)
+	Take() (*gen2.ModuleInfo, error)
+	Last() (*gen2.ModuleInfo, error)
+	Find() ([]*gen2.ModuleInfo, error)
+	FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*gen2.ModuleInfo, err error)
+	FindInBatches(result *[]*gen2.ModuleInfo, batchSize int, fc func(tx gen.Dao, batch int) error) error
 	Pluck(column field.Expr, dest interface{}) error
-	Delete(...*model.ModuleInfo) (info gen.ResultInfo, err error)
+	Delete(...*gen2.ModuleInfo) (info gen.ResultInfo, err error)
 	Update(column field.Expr, value interface{}) (info gen.ResultInfo, err error)
 	UpdateSimple(columns ...field.AssignExpr) (info gen.ResultInfo, err error)
 	Updates(value interface{}) (info gen.ResultInfo, err error)
@@ -173,9 +172,9 @@ type IModuleInfoDo interface {
 	Assign(attrs ...field.AssignExpr) IModuleInfoDo
 	Joins(fields ...field.RelationField) IModuleInfoDo
 	Preload(fields ...field.RelationField) IModuleInfoDo
-	FirstOrInit() (*model.ModuleInfo, error)
-	FirstOrCreate() (*model.ModuleInfo, error)
-	FindByPage(offset int, limit int) (result []*model.ModuleInfo, count int64, err error)
+	FirstOrInit() (*gen2.ModuleInfo, error)
+	FirstOrCreate() (*gen2.ModuleInfo, error)
+	FindByPage(offset int, limit int) (result []*gen2.ModuleInfo, count int64, err error)
 	ScanByPage(result interface{}, offset int, limit int) (count int64, err error)
 	Scan(result interface{}) (err error)
 	Returning(value interface{}, columns ...string) IModuleInfoDo
@@ -275,57 +274,57 @@ func (m moduleInfoDo) Unscoped() IModuleInfoDo {
 	return m.withDO(m.DO.Unscoped())
 }
 
-func (m moduleInfoDo) Create(values ...*model.ModuleInfo) error {
+func (m moduleInfoDo) Create(values ...*gen2.ModuleInfo) error {
 	if len(values) == 0 {
 		return nil
 	}
 	return m.DO.Create(values)
 }
 
-func (m moduleInfoDo) CreateInBatches(values []*model.ModuleInfo, batchSize int) error {
+func (m moduleInfoDo) CreateInBatches(values []*gen2.ModuleInfo, batchSize int) error {
 	return m.DO.CreateInBatches(values, batchSize)
 }
 
 // Save : !!! underlying implementation is different with GORM
 // The method is equivalent to executing the statement: db.Clauses(clause.OnConflict{UpdateAll: true}).Create(values)
-func (m moduleInfoDo) Save(values ...*model.ModuleInfo) error {
+func (m moduleInfoDo) Save(values ...*gen2.ModuleInfo) error {
 	if len(values) == 0 {
 		return nil
 	}
 	return m.DO.Save(values)
 }
 
-func (m moduleInfoDo) First() (*model.ModuleInfo, error) {
+func (m moduleInfoDo) First() (*gen2.ModuleInfo, error) {
 	if result, err := m.DO.First(); err != nil {
 		return nil, err
 	} else {
-		return result.(*model.ModuleInfo), nil
+		return result.(*gen2.ModuleInfo), nil
 	}
 }
 
-func (m moduleInfoDo) Take() (*model.ModuleInfo, error) {
+func (m moduleInfoDo) Take() (*gen2.ModuleInfo, error) {
 	if result, err := m.DO.Take(); err != nil {
 		return nil, err
 	} else {
-		return result.(*model.ModuleInfo), nil
+		return result.(*gen2.ModuleInfo), nil
 	}
 }
 
-func (m moduleInfoDo) Last() (*model.ModuleInfo, error) {
+func (m moduleInfoDo) Last() (*gen2.ModuleInfo, error) {
 	if result, err := m.DO.Last(); err != nil {
 		return nil, err
 	} else {
-		return result.(*model.ModuleInfo), nil
+		return result.(*gen2.ModuleInfo), nil
 	}
 }
 
-func (m moduleInfoDo) Find() ([]*model.ModuleInfo, error) {
+func (m moduleInfoDo) Find() ([]*gen2.ModuleInfo, error) {
 	result, err := m.DO.Find()
-	return result.([]*model.ModuleInfo), err
+	return result.([]*gen2.ModuleInfo), err
 }
 
-func (m moduleInfoDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*model.ModuleInfo, err error) {
-	buf := make([]*model.ModuleInfo, 0, batchSize)
+func (m moduleInfoDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*gen2.ModuleInfo, err error) {
+	buf := make([]*gen2.ModuleInfo, 0, batchSize)
 	err = m.DO.FindInBatches(&buf, batchSize, func(tx gen.Dao, batch int) error {
 		defer func() { results = append(results, buf...) }()
 		return fc(tx, batch)
@@ -333,7 +332,7 @@ func (m moduleInfoDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) 
 	return results, err
 }
 
-func (m moduleInfoDo) FindInBatches(result *[]*model.ModuleInfo, batchSize int, fc func(tx gen.Dao, batch int) error) error {
+func (m moduleInfoDo) FindInBatches(result *[]*gen2.ModuleInfo, batchSize int, fc func(tx gen.Dao, batch int) error) error {
 	return m.DO.FindInBatches(result, batchSize, fc)
 }
 
@@ -359,23 +358,23 @@ func (m moduleInfoDo) Preload(fields ...field.RelationField) IModuleInfoDo {
 	return &m
 }
 
-func (m moduleInfoDo) FirstOrInit() (*model.ModuleInfo, error) {
+func (m moduleInfoDo) FirstOrInit() (*gen2.ModuleInfo, error) {
 	if result, err := m.DO.FirstOrInit(); err != nil {
 		return nil, err
 	} else {
-		return result.(*model.ModuleInfo), nil
+		return result.(*gen2.ModuleInfo), nil
 	}
 }
 
-func (m moduleInfoDo) FirstOrCreate() (*model.ModuleInfo, error) {
+func (m moduleInfoDo) FirstOrCreate() (*gen2.ModuleInfo, error) {
 	if result, err := m.DO.FirstOrCreate(); err != nil {
 		return nil, err
 	} else {
-		return result.(*model.ModuleInfo), nil
+		return result.(*gen2.ModuleInfo), nil
 	}
 }
 
-func (m moduleInfoDo) FindByPage(offset int, limit int) (result []*model.ModuleInfo, count int64, err error) {
+func (m moduleInfoDo) FindByPage(offset int, limit int) (result []*gen2.ModuleInfo, count int64, err error) {
 	result, err = m.Offset(offset).Limit(limit).Find()
 	if err != nil {
 		return
@@ -404,7 +403,7 @@ func (m moduleInfoDo) Scan(result interface{}) (err error) {
 	return m.DO.Scan(result)
 }
 
-func (m moduleInfoDo) Delete(models ...*model.ModuleInfo) (result gen.ResultInfo, err error) {
+func (m moduleInfoDo) Delete(models ...*gen2.ModuleInfo) (result gen.ResultInfo, err error) {
 	return m.DO.Delete(models)
 }
 

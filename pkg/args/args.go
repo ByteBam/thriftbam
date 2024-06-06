@@ -16,7 +16,7 @@ package args
 
 import (
 	"fmt"
-	"github.com/ByteBam/thirftbam/util/plugin"
+	"github.com/ByteBam/thirftbam/pkg/plugin"
 	"runtime"
 	"strings"
 	"time"

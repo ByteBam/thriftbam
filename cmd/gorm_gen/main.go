@@ -3,8 +3,8 @@ package main
 import (
 	"flag"
 	"github.com/ByteBam/thirftbam/biz/repository"
-	"github.com/ByteBam/thirftbam/util/config"
-	"github.com/ByteBam/thirftbam/util/log"
+	"github.com/ByteBam/thirftbam/pkg/utils/config"
+	"github.com/ByteBam/thirftbam/pkg/utils/log"
 	"gorm.io/gen"
 )
 

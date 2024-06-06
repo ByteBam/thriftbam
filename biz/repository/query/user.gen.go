@@ -6,6 +6,7 @@ package query
 
 import (
 	"context"
+	gen2 "github.com/ByteBam/thirftbam/biz/model/gen"
 
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -15,15 +16,13 @@ import (
 	"gorm.io/gen/field"
 
 	"gorm.io/plugin/dbresolver"
-
-	"github.com/ByteBam/thirftbam/biz/model"
 )
 
 func newUser(db *gorm.DB, opts ...gen.DOOption) user {
 	_user := user{}
 
 	_user.userDo.UseDB(db, opts...)
-	_user.userDo.UseModel(&model.User{})
+	_user.userDo.UseModel(&gen2.User{})
 
 	tableName := _user.userDo.TableName()
 	_user.ALL = field.NewAsterisk(tableName)
@@ -153,17 +152,17 @@ type IUserDo interface {
 	Count() (count int64, err error)
 	Scopes(funcs ...func(gen.Dao) gen.Dao) IUserDo
 	Unscoped() IUserDo
-	Create(values ...*model.User) error
-	CreateInBatches(values []*model.User, batchSize int) error
-	Save(values ...*model.User) error
-	First() (*model.User, error)
-	Take() (*model.User, error)
-	Last() (*model.User, error)
-	Find() ([]*model.User, error)
-	FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*model.User, err error)
-	FindInBatches(result *[]*model.User, batchSize int, fc func(tx gen.Dao, batch int) error) error
+	Create(values ...*gen2.User) error
+	CreateInBatches(values []*gen2.User, batchSize int) error
+	Save(values ...*gen2.User) error
+	First() (*gen2.User, error)
+	Take() (*gen2.User, error)
+	Last() (*gen2.User, error)
+	Find() ([]*gen2.User, error)
+	FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*gen2.User, err error)
+	FindInBatches(result *[]*gen2.User, batchSize int, fc func(tx gen.Dao, batch int) error) error
 	Pluck(column field.Expr, dest interface{}) error
-	Delete(...*model.User) (info gen.ResultInfo, err error)
+	Delete(...*gen2.User) (info gen.ResultInfo, err error)
 	Update(column field.Expr, value interface{}) (info gen.ResultInfo, err error)
 	UpdateSimple(columns ...field.AssignExpr) (info gen.ResultInfo, err error)
 	Updates(value interface{}) (info gen.ResultInfo, err error)
@@ -175,9 +174,9 @@ type IUserDo interface {
 	Assign(attrs ...field.AssignExpr) IUserDo
 	Joins(fields ...field.RelationField) IUserDo
 	Preload(fields ...field.RelationField) IUserDo
-	FirstOrInit() (*model.User, error)
-	FirstOrCreate() (*model.User, error)
-	FindByPage(offset int, limit int) (result []*model.User, count int64, err error)
+	FirstOrInit() (*gen2.User, error)
+	FirstOrCreate() (*gen2.User, error)
+	FindByPage(offset int, limit int) (result []*gen2.User, count int64, err error)
 	ScanByPage(result interface{}, offset int, limit int) (count int64, err error)
 	Scan(result interface{}) (err error)
 	Returning(value interface{}, columns ...string) IUserDo
@@ -277,57 +276,57 @@ func (u userDo) Unscoped() IUserDo {
 	return u.withDO(u.DO.Unscoped())
 }
 
-func (u userDo) Create(values ...*model.User) error {
+func (u userDo) Create(values ...*gen2.User) error {
 	if len(values) == 0 {
 		return nil
 	}
 	return u.DO.Create(values)
 }
 
-func (u userDo) CreateInBatches(values []*model.User, batchSize int) error {
+func (u userDo) CreateInBatches(values []*gen2.User, batchSize int) error {
 	return u.DO.CreateInBatches(values, batchSize)
 }
 
 // Save : !!! underlying implementation is different with GORM
 // The method is equivalent to executing the statement: db.Clauses(clause.OnConflict{UpdateAll: true}).Create(values)
-func (u userDo) Save(values ...*model.User) error {
+func (u userDo) Save(values ...*gen2.User) error {
 	if len(values) == 0 {
 		return nil
 	}
 	return u.DO.Save(values)
 }
 
-func (u userDo) First() (*model.User, error) {
+func (u userDo) First() (*gen2.User, error) {
 	if result, err := u.DO.First(); err != nil {
 		return nil, err
 	} else {
-		return result.(*model.User), nil
+		return result.(*gen2.User), nil
 	}
 }
 
-func (u userDo) Take() (*model.User, error) {
+func (u userDo) Take() (*gen2.User, error) {
 	if result, err := u.DO.Take(); err != nil {
 		return nil, err
 	} else {
-		return result.(*model.User), nil
+		return result.(*gen2.User), nil
 	}
 }
 
-func (u userDo) Last() (*model.User, error) {
+func (u userDo) Last() (*gen2.User, error) {
 	if result, err := u.DO.Last(); err != nil {
 		return nil, err
 	} else {
-		return result.(*model.User), nil
+		return result.(*gen2.User), nil
 	}
 }
 
-func (u userDo) Find() ([]*model.User, error) {
+func (u userDo) Find() ([]*gen2.User, error) {
 	result, err := u.DO.Find()
-	return result.([]*model.User), err
+	return result.([]*gen2.User), err
 }
 
-func (u userDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*model.User, err error) {
-	buf := make([]*model.User, 0, batchSize)
+func (u userDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*gen2.User, err error) {
+	buf := make([]*gen2.User, 0, batchSize)
 	err = u.DO.FindInBatches(&buf, batchSize, func(tx gen.Dao, batch int) error {
 		defer func() { results = append(results, buf...) }()
 		return fc(tx, batch)
@@ -335,7 +334,7 @@ func (u userDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error)
 	return results, err
 }
 
-func (u userDo) FindInBatches(result *[]*model.User, batchSize int, fc func(tx gen.Dao, batch int) error) error {
+func (u userDo) FindInBatches(result *[]*gen2.User, batchSize int, fc func(tx gen.Dao, batch int) error) error {
 	return u.DO.FindInBatches(result, batchSize, fc)
 }
 
@@ -361,23 +360,23 @@ func (u userDo) Preload(fields ...field.RelationField) IUserDo {
 	return &u
 }
 
-func (u userDo) FirstOrInit() (*model.User, error) {
+func (u userDo) FirstOrInit() (*gen2.User, error) {
 	if result, err := u.DO.FirstOrInit(); err != nil {
 		return nil, err
 	} else {
-		return result.(*model.User), nil
+		return result.(*gen2.User), nil
 	}
 }
 
-func (u userDo) FirstOrCreate() (*model.User, error) {
+func (u userDo) FirstOrCreate() (*gen2.User, error) {
 	if result, err := u.DO.FirstOrCreate(); err != nil {
 		return nil, err
 	} else {
-		return result.(*model.User), nil
+		return result.(*gen2.User), nil
 	}
 }
 
-func (u userDo) FindByPage(offset int, limit int) (result []*model.User, count int64, err error) {
+func (u userDo) FindByPage(offset int, limit int) (result []*gen2.User, count int64, err error) {
 	result, err = u.Offset(offset).Limit(limit).Find()
 	if err != nil {
 		return
@@ -406,7 +405,7 @@ func (u userDo) Scan(result interface{}) (err error) {
 	return u.DO.Scan(result)
 }
 
-func (u userDo) Delete(models ...*model.User) (result gen.ResultInfo, err error) {
+func (u userDo) Delete(models ...*gen2.User) (result gen.ResultInfo, err error) {
 	return u.DO.Delete(models)
 }
 

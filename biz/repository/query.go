@@ -2,7 +2,7 @@ package repository
 
 import (
 	"context"
-	"github.com/ByteBam/thirftbam/biz/model"
+	"github.com/ByteBam/thirftbam/biz/model/gen"
 	"github.com/ByteBam/thirftbam/biz/repository/query"
 )
 
@@ -12,8 +12,8 @@ type CaptchaRepository interface {
 
 type QueryRepository interface {
 	GetBranchByID(ctx context.Context, id string) (string, error)
-	CreateModule(ctx context.Context, m *model.ModuleInfo) error
-	CreateInterface(ctx context.Context, m *model.InterfaceInfo) error
+	CreateModule(ctx context.Context, m *gen.ModuleInfo) error
+	CreateInterface(ctx context.Context, m *gen.InterfaceInfo) error
 }
 
 func (q *queryRepository) GetBranchByID(ctx context.Context, id string) (string, error) {
@@ -25,14 +25,14 @@ func (q *queryRepository) GetBranchByID(ctx context.Context, id string) (string,
 	return branchInfo.BranchName, nil
 }
 
-func (q *queryRepository) CreateModule(ctx context.Context, m *model.ModuleInfo) error {
+func (q *queryRepository) CreateModule(ctx context.Context, m *gen.ModuleInfo) error {
 	if err := query.Use(q.db).ModuleInfo.WithContext(ctx).Create(m); err != nil {
 		return err
 	}
 	return nil
 }
 
-func (q *queryRepository) CreateInterface(ctx context.Context, m *model.InterfaceInfo) error {
+func (q *queryRepository) CreateInterface(ctx context.Context, m *gen.InterfaceInfo) error {
 	if err := query.Use(q.db).InterfaceInfo.WithContext(ctx).Create(m); err != nil {
 		return err
 	}

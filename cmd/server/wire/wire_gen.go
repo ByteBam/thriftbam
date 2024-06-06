@@ -12,9 +12,9 @@ import (
 	"github.com/ByteBam/thirftbam/biz/repository"
 	"github.com/ByteBam/thirftbam/biz/server"
 	"github.com/ByteBam/thirftbam/biz/service"
-	"github.com/ByteBam/thirftbam/pkg/util/log"
-	"github.com/ByteBam/thirftbam/pkg/util/server/http"
-	"github.com/ByteBam/thirftbam/pkg/util/sid"
+	"github.com/ByteBam/thirftbam/pkg/utils/log"
+	"github.com/ByteBam/thirftbam/pkg/utils/server/http"
+	"github.com/ByteBam/thirftbam/pkg/utils/sid"
 	"github.com/google/wire"
 	"github.com/spf13/viper"
 )

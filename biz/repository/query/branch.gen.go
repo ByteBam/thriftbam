@@ -6,6 +6,7 @@ package query
 
 import (
 	"context"
+	gen2 "github.com/ByteBam/thirftbam/biz/model/gen"
 
 	"gorm.io/gorm"
 	"gorm.io/gorm/clause"
@@ -15,15 +16,13 @@ import (
 	"gorm.io/gen/field"
 
 	"gorm.io/plugin/dbresolver"
-
-	"github.com/ByteBam/thirftbam/biz/model"
 )
 
 func newBranch(db *gorm.DB, opts ...gen.DOOption) branch {
 	_branch := branch{}
 
 	_branch.branchDo.UseDB(db, opts...)
-	_branch.branchDo.UseModel(&model.Branch{})
+	_branch.branchDo.UseModel(&gen2.Branch{})
 
 	tableName := _branch.branchDo.TableName()
 	_branch.ALL = field.NewAsterisk(tableName)
@@ -153,17 +152,17 @@ type IBranchDo interface {
 	Count() (count int64, err error)
 	Scopes(funcs ...func(gen.Dao) gen.Dao) IBranchDo
 	Unscoped() IBranchDo
-	Create(values ...*model.Branch) error
-	CreateInBatches(values []*model.Branch, batchSize int) error
-	Save(values ...*model.Branch) error
-	First() (*model.Branch, error)
-	Take() (*model.Branch, error)
-	Last() (*model.Branch, error)
-	Find() ([]*model.Branch, error)
-	FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*model.Branch, err error)
-	FindInBatches(result *[]*model.Branch, batchSize int, fc func(tx gen.Dao, batch int) error) error
+	Create(values ...*gen2.Branch) error
+	CreateInBatches(values []*gen2.Branch, batchSize int) error
+	Save(values ...*gen2.Branch) error
+	First() (*gen2.Branch, error)
+	Take() (*gen2.Branch, error)
+	Last() (*gen2.Branch, error)
+	Find() ([]*gen2.Branch, error)
+	FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*gen2.Branch, err error)
+	FindInBatches(result *[]*gen2.Branch, batchSize int, fc func(tx gen.Dao, batch int) error) error
 	Pluck(column field.Expr, dest interface{}) error
-	Delete(...*model.Branch) (info gen.ResultInfo, err error)
+	Delete(...*gen2.Branch) (info gen.ResultInfo, err error)
 	Update(column field.Expr, value interface{}) (info gen.ResultInfo, err error)
 	UpdateSimple(columns ...field.AssignExpr) (info gen.ResultInfo, err error)
 	Updates(value interface{}) (info gen.ResultInfo, err error)
@@ -175,9 +174,9 @@ type IBranchDo interface {
 	Assign(attrs ...field.AssignExpr) IBranchDo
 	Joins(fields ...field.RelationField) IBranchDo
 	Preload(fields ...field.RelationField) IBranchDo
-	FirstOrInit() (*model.Branch, error)
-	FirstOrCreate() (*model.Branch, error)
-	FindByPage(offset int, limit int) (result []*model.Branch, count int64, err error)
+	FirstOrInit() (*gen2.Branch, error)
+	FirstOrCreate() (*gen2.Branch, error)
+	FindByPage(offset int, limit int) (result []*gen2.Branch, count int64, err error)
 	ScanByPage(result interface{}, offset int, limit int) (count int64, err error)
 	Scan(result interface{}) (err error)
 	Returning(value interface{}, columns ...string) IBranchDo
@@ -277,57 +276,57 @@ func (b branchDo) Unscoped() IBranchDo {
 	return b.withDO(b.DO.Unscoped())
 }
 
-func (b branchDo) Create(values ...*model.Branch) error {
+func (b branchDo) Create(values ...*gen2.Branch) error {
 	if len(values) == 0 {
 		return nil
 	}
 	return b.DO.Create(values)
 }
 
-func (b branchDo) CreateInBatches(values []*model.Branch, batchSize int) error {
+func (b branchDo) CreateInBatches(values []*gen2.Branch, batchSize int) error {
 	return b.DO.CreateInBatches(values, batchSize)
 }
 
 // Save : !!! underlying implementation is different with GORM
 // The method is equivalent to executing the statement: db.Clauses(clause.OnConflict{UpdateAll: true}).Create(values)
-func (b branchDo) Save(values ...*model.Branch) error {
+func (b branchDo) Save(values ...*gen2.Branch) error {
 	if len(values) == 0 {
 		return nil
 	}
 	return b.DO.Save(values)
 }
 
-func (b branchDo) First() (*model.Branch, error) {
+func (b branchDo) First() (*gen2.Branch, error) {
 	if result, err := b.DO.First(); err != nil {
 		return nil, err
 	} else {
-		return result.(*model.Branch), nil
+		return result.(*gen2.Branch), nil
 	}
 }
 
-func (b branchDo) Take() (*model.Branch, error) {
+func (b branchDo) Take() (*gen2.Branch, error) {
 	if result, err := b.DO.Take(); err != nil {
 		return nil, err
 	} else {
-		return result.(*model.Branch), nil
+		return result.(*gen2.Branch), nil
 	}
 }
 
-func (b branchDo) Last() (*model.Branch, error) {
+func (b branchDo) Last() (*gen2.Branch, error) {
 	if result, err := b.DO.Last(); err != nil {
 		return nil, err
 	} else {
-		return result.(*model.Branch), nil
+		return result.(*gen2.Branch), nil
 	}
 }
 
-func (b branchDo) Find() ([]*model.Branch, error) {
+func (b branchDo) Find() ([]*gen2.Branch, error) {
 	result, err := b.DO.Find()
-	return result.([]*model.Branch), err
+	return result.([]*gen2.Branch), err
 }
 
-func (b branchDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*model.Branch, err error) {
-	buf := make([]*model.Branch, 0, batchSize)
+func (b branchDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) error) (results []*gen2.Branch, err error) {
+	buf := make([]*gen2.Branch, 0, batchSize)
 	err = b.DO.FindInBatches(&buf, batchSize, func(tx gen.Dao, batch int) error {
 		defer func() { results = append(results, buf...) }()
 		return fc(tx, batch)
@@ -335,7 +334,7 @@ func (b branchDo) FindInBatch(batchSize int, fc func(tx gen.Dao, batch int) erro
 	return results, err
 }
 
-func (b branchDo) FindInBatches(result *[]*model.Branch, batchSize int, fc func(tx gen.Dao, batch int) error) error {
+func (b branchDo) FindInBatches(result *[]*gen2.Branch, batchSize int, fc func(tx gen.Dao, batch int) error) error {
 	return b.DO.FindInBatches(result, batchSize, fc)
 }
 
@@ -361,23 +360,23 @@ func (b branchDo) Preload(fields ...field.RelationField) IBranchDo {
 	return &b
 }
 
-func (b branchDo) FirstOrInit() (*model.Branch, error) {
+func (b branchDo) FirstOrInit() (*gen2.Branch, error) {
 	if result, err := b.DO.FirstOrInit(); err != nil {
 		return nil, err
 	} else {
-		return result.(*model.Branch), nil
+		return result.(*gen2.Branch), nil
 	}
 }
 
-func (b branchDo) FirstOrCreate() (*model.Branch, error) {
+func (b branchDo) FirstOrCreate() (*gen2.Branch, error) {
 	if result, err := b.DO.FirstOrCreate(); err != nil {
 		return nil, err
 	} else {
-		return result.(*model.Branch), nil
+		return result.(*gen2.Branch), nil
 	}
 }
 
-func (b branchDo) FindByPage(offset int, limit int) (result []*model.Branch, count int64, err error) {
+func (b branchDo) FindByPage(offset int, limit int) (result []*gen2.Branch, count int64, err error) {
 	result, err = b.Offset(offset).Limit(limit).Find()
 	if err != nil {
 		return
@@ -406,7 +405,7 @@ func (b branchDo) Scan(result interface{}) (err error) {
 	return b.DO.Scan(result)
 }
 
-func (b branchDo) Delete(models ...*model.Branch) (result gen.ResultInfo, err error) {
+func (b branchDo) Delete(models ...*gen2.Branch) (result gen.ResultInfo, err error) {
 	return b.DO.Delete(models)
 }
 

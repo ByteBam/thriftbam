@@ -2,8 +2,8 @@ package service
 
 import (
 	"github.com/ByteBam/thirftbam/biz/repository"
-	"github.com/ByteBam/thirftbam/pkg/util/log"
-	"github.com/ByteBam/thirftbam/pkg/util/sid"
+	"github.com/ByteBam/thirftbam/pkg/utils/log"
+	"github.com/ByteBam/thirftbam/pkg/utils/sid"
 )
 
 type Service struct {

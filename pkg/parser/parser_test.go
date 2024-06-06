@@ -46,13 +46,21 @@ struct s {
 	zzz = "zzz",
 )
 
+struct b {
+	1: string f1 ( a = "a" );
+	2: s a;
+}
+
 exception myerror {
   1: i32 error_code ( range = "<0" )
   2: string error_msg
 } (hello = "world")
 
 service test_service {
-	s (what = "response-annotation") method() (what = "method-annotation")
+	s (what = "response-annotation") method(
+1:b res
+2:i32 name
+) (what = "method-annotation")
 } (
 	what.is.this = "service.annotation",
 	empty.annotation = "",

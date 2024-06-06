@@ -2,7 +2,7 @@
 
 package handler
 
-import "github.com/ByteBam/thirftbam/pkg/util/log"
+import "github.com/ByteBam/thirftbam/pkg/utils/log"
 
 type Handler struct {
 	logger *log.Logger

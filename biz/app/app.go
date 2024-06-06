@@ -2,7 +2,7 @@ package app
 
 import (
 	"context"
-	"github.com/ByteBam/thirftbam/pkg/util/server"
+	"github.com/ByteBam/thirftbam/pkg/utils/server"
 	"log"
 	"os"
 	"os/signal"
