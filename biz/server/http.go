@@ -24,7 +24,7 @@ func NewHTTPServer(
 		logger,
 	)
 
-	url := fmt.Sprintf("http://%s/swagger/doc.json", conf.GetString("app.http.addr"))
+	url := fmt.Sprintf("http://%s/swagger/doc.json", conf.GetString("app.http.swag"))
 	s.Hertz.Any("/ping", func(c context.Context, ctx *app.RequestContext) {
 		ctx.JSON(200, "pong")
 	})
