@@ -19,7 +19,7 @@ type Option func(a *App)
 func NewApp(opts ...Option) *App {
 	a := &App{}
 	for _, opt := range opts {
-		go opt(a)
+		opt(a)
 	}
 	return a
 }
