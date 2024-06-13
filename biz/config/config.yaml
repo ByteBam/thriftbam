@@ -1,8 +1,8 @@
 app:
   name: "thirftbam"
   http:
-    addr: :8888
-    swag: 118.178.229.137:8888
+    host: 118.178.229.137
+    post: :8888
 log:
   log_level: debug
   encoding: console           # json or console
