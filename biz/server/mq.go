@@ -23,6 +23,7 @@ func NewMQServer(
 		logger,
 		service,
 	)
+	// TODO s.Subscribe("Fast_Update")
 
 	err := s.Subscribe(conf.GetString("rocketmq.topic"), consumer.MessageSelector{}, func(ctx context.Context, msgs ...*primitive.MessageExt) (consumer.ConsumeResult, error) {
 		for _, msg := range msgs {
@@ -44,6 +45,10 @@ func NewMQServer(
 			}
 			nums, err := s.Service.Parser(ctx, *loading, req.BranchId)
 			if err != nil {
+				err := s.Service.ParserError(ctx, req.BranchId)
+				if err != nil {
+					return consumer.Rollback, err
+				}
 				logger.Error(err.Error())
 				return consumer.Rollback, err
 			}

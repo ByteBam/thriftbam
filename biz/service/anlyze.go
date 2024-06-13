@@ -25,6 +25,7 @@ type AnalyzeService interface {
 	Loading(ctx context.Context, url string) (*[]download.IDL, error)
 	Parser(ctx context.Context, idls []download.IDL, branchId string) (int, error)
 	InterfaceNums(ctx context.Context, branchId string, nums int) error
+	ParserError(ctx context.Context, id string) error
 }
 
 type analyzeService struct {
@@ -47,7 +48,7 @@ func (a *analyzeService) GetUrl(ctx context.Context, request *v1.AnalyzeRequest)
 	if err != nil {
 		return "", err
 	}
-	updateTime, err := time.Parse(`2024-06-12 09:53:51`, request.UpdateTime)
+	updateTime, err := time.Parse("2006-01-02T15:04:05", request.UpdateTime)
 	if err != nil {
 		return "", err
 	}
@@ -228,6 +229,14 @@ func (a *analyzeService) InterfaceNums(ctx context.Context, branchId string, num
 		return err
 	}
 	return a.db.UpdateBranchInterfaceNumByID(ctx, branchId, nums)
+}
+
+func (a *analyzeService) ParserError(ctx context.Context, id string) error {
+	err := a.db.UpdateBranchStatusByID(ctx, id, 3)
+	if err != nil {
+		return err
+	}
+	return err
 }
 
 func NewAnalyzeService(
