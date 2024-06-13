@@ -52,8 +52,7 @@ func newApp(
 	conf *viper.Viper,
 ) *app.App {
 	return app.NewApp(
-		app.WithServer(httpServer),
-		app.WithServer(mqServer),
+		app.WithServer(httpServer, mqServer),
 		app.WithName(conf.GetString("app.name")),
 	)
 }

@@ -26,7 +26,7 @@ func NewApp(opts ...Option) *App {
 
 func WithServer(servers ...server.Server) Option {
 	return func(a *App) {
-		a.servers = servers
+		a.servers = append(a.servers, servers...)
 	}
 }
 
