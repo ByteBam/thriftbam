@@ -1,7 +1,7 @@
 app:
   name: "thirftbam"
   http:
-    host: 118.178.229.137
+    host: 152.136.135.225
     post: :8888
 log:
   log_level: debug
