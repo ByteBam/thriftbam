@@ -13,7 +13,9 @@ import (
 	"github.com/bytedance/sonic"
 	"io"
 	"net/http"
+	"strings"
 	"sync"
+	"time"
 )
 
 var USER_ACCUSER_ACCESSION_KEY = "USER_ACCUSER_ACCESSION_KEY"
@@ -22,6 +24,7 @@ type AnalyzeService interface {
 	GetUrl(ctx context.Context, request *v1.AnalyzeRequest) (string, error)
 	Loading(ctx context.Context, url string) (*[]download.IDL, error)
 	Parser(ctx context.Context, idls []download.IDL, branchId string) (int, error)
+	InterfaceNums(ctx context.Context, branchId string, nums int) error
 }
 
 type analyzeService struct {
@@ -31,17 +34,45 @@ type analyzeService struct {
 }
 
 func (a *analyzeService) GetUrl(ctx context.Context, request *v1.AnalyzeRequest) (string, error) {
-	key := fmt.Sprintf("%s%s", USER_ACCUSER_ACCESSION_KEY, request.UserId)
+	id, err := a.db.GetGiteeIDByUserID(ctx, request.UserId)
+	if err != nil {
+		return "", err
+	}
+	key := fmt.Sprintf("%s%d", USER_ACCUSER_ACCESSION_KEY, id)
 	ack, err := a.rdb.GetTokenByRDS(ctx, key)
 	if err != nil {
 		return "", err
 	}
-	ref, err := a.db.GetBranchByID(ctx, request.BranchId)
+	branchInfo, err := a.db.GetBranchInfoByID(ctx, request.BranchId)
 	if err != nil {
 		return "", err
 	}
+	updateTime, err := time.Parse(`2024-06-12 09:53:51`, request.UpdateTime)
+	if err != nil {
+		return "", err
+	}
+	if updateTime.After(branchInfo.UpdateTime) || (branchInfo.UpdateTime.Equal(updateTime) && (branchInfo.Status == 1 || branchInfo.Status == 2)) {
+		return "", errors.New("the branch has been updated, please refresh the page")
+	}
+	if err = a.db.UpdateBranchStatusByID(ctx, request.BranchId, 1); err != nil {
+		return "", err
+	}
+	storeLink, err := a.db.GetStoreLinkByID(ctx, branchInfo.StoreID)
+	if err != nil {
+		return "", err
+	}
+	_, str, ok := strings.Cut(storeLink, "https://gitee.com/")
+	if !ok {
+		return "", errors.New("failed to get the correct url")
+	}
+	strs := strings.Split(str, "/")
+	owner := strs[0]
+	repo, _, ok := strings.Cut(strs[1], ".git")
+	if !ok {
+		return "", errors.New("failed to get the correct url")
+	}
 	// 拼接url
-	url := fmt.Sprintf("https://gitee.com/api/v5/repos/%s/%s/contents/%s?access_token=%s&ref=%s", request.Owner, request.Repo, request.Path, ack, ref)
+	url := fmt.Sprintf("https://gitee.com/api/v5/repos/%s/%s/contents/%s?access_token=%s&ref=%s", owner, repo, "idl", ack, branchInfo.BranchName)
 	return url, nil
 }
 
@@ -189,6 +220,14 @@ func (a *analyzeService) Parser(ctx context.Context, idls []download.IDL, branch
 	}
 
 	return count, nil
+}
+
+func (a *analyzeService) InterfaceNums(ctx context.Context, branchId string, nums int) error {
+	err := a.db.UpdateBranchStatusByID(ctx, branchId, 2)
+	if err != nil {
+		return err
+	}
+	return a.db.UpdateBranchInterfaceNumByID(ctx, branchId, nums)
 }
 
 func NewAnalyzeService(

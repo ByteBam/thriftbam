@@ -23,3 +23,8 @@ data:
     db: 0
     read_timeout: 0.2s
     write_timeout: 0.2s
+
+rocketmq:
+  nameSrv: 118.178.229.137:9876
+  group: "slow_queue_consumer"
+  topic: "Slow_Update"

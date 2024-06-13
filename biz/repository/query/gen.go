@@ -17,32 +17,38 @@ import (
 
 func Use(db *gorm.DB, opts ...gen.DOOption) *Query {
 	return &Query{
-		db:            db,
-		Branch:        newBranch(db, opts...),
-		InterfaceInfo: newInterfaceInfo(db, opts...),
-		ModuleInfo:    newModuleInfo(db, opts...),
-		User:          newUser(db, opts...),
+		db:              db,
+		Branch:          newBranch(db, opts...),
+		InterfaceInfo:   newInterfaceInfo(db, opts...),
+		LinkedThirdUser: newLinkedThirdUser(db, opts...),
+		ModuleInfo:      newModuleInfo(db, opts...),
+		Store:           newStore(db, opts...),
+		User:            newUser(db, opts...),
 	}
 }
 
 type Query struct {
 	db *gorm.DB
 
-	Branch        branch
-	InterfaceInfo interfaceInfo
-	ModuleInfo    moduleInfo
-	User          user
+	Branch          branch
+	InterfaceInfo   interfaceInfo
+	LinkedThirdUser linkedThirdUser
+	ModuleInfo      moduleInfo
+	Store           store
+	User            user
 }
 
 func (q *Query) Available() bool { return q.db != nil }
 
 func (q *Query) clone(db *gorm.DB) *Query {
 	return &Query{
-		db:            db,
-		Branch:        q.Branch.clone(db),
-		InterfaceInfo: q.InterfaceInfo.clone(db),
-		ModuleInfo:    q.ModuleInfo.clone(db),
-		User:          q.User.clone(db),
+		db:              db,
+		Branch:          q.Branch.clone(db),
+		InterfaceInfo:   q.InterfaceInfo.clone(db),
+		LinkedThirdUser: q.LinkedThirdUser.clone(db),
+		ModuleInfo:      q.ModuleInfo.clone(db),
+		Store:           q.Store.clone(db),
+		User:            q.User.clone(db),
 	}
 }
 
@@ -56,27 +62,33 @@ func (q *Query) WriteDB() *Query {
 
 func (q *Query) ReplaceDB(db *gorm.DB) *Query {
 	return &Query{
-		db:            db,
-		Branch:        q.Branch.replaceDB(db),
-		InterfaceInfo: q.InterfaceInfo.replaceDB(db),
-		ModuleInfo:    q.ModuleInfo.replaceDB(db),
-		User:          q.User.replaceDB(db),
+		db:              db,
+		Branch:          q.Branch.replaceDB(db),
+		InterfaceInfo:   q.InterfaceInfo.replaceDB(db),
+		LinkedThirdUser: q.LinkedThirdUser.replaceDB(db),
+		ModuleInfo:      q.ModuleInfo.replaceDB(db),
+		Store:           q.Store.replaceDB(db),
+		User:            q.User.replaceDB(db),
 	}
 }
 
 type queryCtx struct {
-	Branch        IBranchDo
-	InterfaceInfo IInterfaceInfoDo
-	ModuleInfo    IModuleInfoDo
-	User          IUserDo
+	Branch          IBranchDo
+	InterfaceInfo   IInterfaceInfoDo
+	LinkedThirdUser ILinkedThirdUserDo
+	ModuleInfo      IModuleInfoDo
+	Store           IStoreDo
+	User            IUserDo
 }
 
 func (q *Query) WithContext(ctx context.Context) *queryCtx {
 	return &queryCtx{
-		Branch:        q.Branch.WithContext(ctx),
-		InterfaceInfo: q.InterfaceInfo.WithContext(ctx),
-		ModuleInfo:    q.ModuleInfo.WithContext(ctx),
-		User:          q.User.WithContext(ctx),
+		Branch:          q.Branch.WithContext(ctx),
+		InterfaceInfo:   q.InterfaceInfo.WithContext(ctx),
+		LinkedThirdUser: q.LinkedThirdUser.WithContext(ctx),
+		ModuleInfo:      q.ModuleInfo.WithContext(ctx),
+		Store:           q.Store.WithContext(ctx),
+		User:            q.User.WithContext(ctx),
 	}
 }
 

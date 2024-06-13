@@ -9,11 +9,13 @@ package wire
 import (
 	"github.com/ByteBam/thirftbam/biz/app"
 	"github.com/ByteBam/thirftbam/biz/handler"
+	"github.com/ByteBam/thirftbam/biz/middleware"
 	"github.com/ByteBam/thirftbam/biz/repository"
 	"github.com/ByteBam/thirftbam/biz/server"
 	"github.com/ByteBam/thirftbam/biz/service"
 	"github.com/ByteBam/thirftbam/pkg/utils/log"
 	"github.com/ByteBam/thirftbam/pkg/utils/server/http"
+	"github.com/ByteBam/thirftbam/pkg/utils/server/mq"
 	"github.com/ByteBam/thirftbam/pkg/utils/sid"
 	"github.com/google/wire"
 	"github.com/spf13/viper"
@@ -34,7 +36,8 @@ func NewWire(viper2 *viper.Viper, logger *log.Logger) (*app.App, func(), error) 
 	analyzeService := service.NewAnalyzeService(serviceService, queryRepository, captchaRepository)
 	analyzeHandler := handler.NewAnalyzeHandler(handlerHandler, analyzeService)
 	httpServer := server.NewHTTPServer(logger, viper2, analyzeHandler)
-	appApp := newApp(httpServer, viper2)
+	mqServer := server.NewMQServer(logger, viper2, analyzeService)
+	appApp := newApp(httpServer, mqServer, viper2)
 	return appApp, func() {
 	}, nil
 }
@@ -43,15 +46,18 @@ func NewWire(viper2 *viper.Viper, logger *log.Logger) (*app.App, func(), error) 
 
 var repositorySet = wire.NewSet(repository.NewDB, repository.NewRedis, repository.NewRepository, repository.NewTransaction, repository.NewQueryRepository, repository.NewCaptchaRepository)
 
+var middlewareSet = wire.NewSet(middleware.NewRMQ)
+
 var serviceSet = wire.NewSet(service.NewService, service.NewAnalyzeService)
 
 var handlerSet = wire.NewSet(handler.NewHandler, handler.NewAnalyzeHandler)
 
-var serverSet = wire.NewSet(server.NewHTTPServer)
+var serverSet = wire.NewSet(server.NewHTTPServer, server.NewMQServer)
 
 func newApp(
 	httpServer *http.Server,
+	mqServer *mq.Server,
 	conf *viper.Viper,
 ) *app.App {
-	return app.NewApp(app.WithServer(httpServer), app.WithName(conf.GetString("app.name")))
+	return app.NewApp(app.WithServer(httpServer), app.WithServer(mqServer), app.WithName(conf.GetString("app.name")))
 }

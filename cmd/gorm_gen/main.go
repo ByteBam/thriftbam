@@ -47,6 +47,8 @@ func main() {
 		g.GenerateModel("user"),
 		g.GenerateModel("module_info"),
 		g.GenerateModel("interface_info"),
+		g.GenerateModel("store"),
+		g.GenerateModel("linked_third_user"),
 	)
 
 	g.Execute()

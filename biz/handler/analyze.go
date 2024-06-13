@@ -58,6 +58,12 @@ func (h *AnalyzeHandler) Analyze(ctx context.Context, c *app.RequestContext) {
 		return
 	}
 
+	if err = h.AnalyzeService.InterfaceNums(ctx, req.BranchId, nums); err != nil {
+		h.logger.WithContext(ctx).Error("AnalyzeService.InterfaceNums error", zap.Error(err))
+		v1.HandleError(c, http.StatusInternalServerError, v1.ErrServiceError, err.Error())
+		return
+	}
+
 	v1.HandleSuccess(c, v1.AnalyzeResponse{
 		InterfaceNum: nums,
 	})
