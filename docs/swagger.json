@@ -45,7 +45,7 @@
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/v1.Response"
+                            "$ref": "#/definitions/v1.AnalyzeResponse"
                         }
                     }
                 }
@@ -55,43 +55,23 @@
     "definitions": {
         "v1.AnalyzeRequest": {
             "type": "object",
-            "required": [
-                "branch_id",
-                "owner",
-                "path",
-                "repo",
-                "user_id"
-            ],
             "properties": {
-                "branch_id": {
+                "branchId": {
                     "type": "string"
                 },
-                "owner": {
+                "updateTime": {
                     "type": "string"
                 },
-                "path": {
-                    "type": "string"
-                },
-                "ref": {
-                    "type": "string"
-                },
-                "repo": {
-                    "type": "string"
-                },
-                "user_id": {
+                "userId": {
                     "type": "string"
                 }
             }
         },
-        "v1.Response": {
+        "v1.AnalyzeResponse": {
             "type": "object",
             "properties": {
-                "code": {
+                "nums": {
                     "type": "integer"
-                },
-                "data": {},
-                "message": {
-                    "type": "string"
                 }
             }
         }

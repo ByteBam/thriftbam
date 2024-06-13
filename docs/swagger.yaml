@@ -1,32 +1,17 @@
 definitions:
   v1.AnalyzeRequest:
     properties:
-      branch_id:
+      branchId:
         type: string
-      owner:
+      updateTime:
         type: string
-      path:
+      userId:
         type: string
-      ref:
-        type: string
-      repo:
-        type: string
-      user_id:
-        type: string
-    required:
-    - branch_id
-    - owner
-    - path
-    - repo
-    - user_id
     type: object
-  v1.Response:
+  v1.AnalyzeResponse:
     properties:
-      code:
+      nums:
         type: integer
-      data: {}
-      message:
-        type: string
     type: object
 host: localhost:8888
 info:
@@ -60,7 +45,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/v1.Response'
+            $ref: '#/definitions/v1.AnalyzeResponse'
       summary: analyze handler
       tags:
       - analyze
