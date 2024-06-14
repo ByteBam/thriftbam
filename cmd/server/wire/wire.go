@@ -28,7 +28,7 @@ var repositorySet = wire.NewSet(
 )
 
 var middlewareSet = wire.NewSet(
-	middleware.NewRMQ,
+	middleware.NewRMQConsumer,
 )
 
 var serviceSet = wire.NewSet(

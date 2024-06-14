@@ -10,15 +10,13 @@ import (
 	"github.com/ByteBam/thirftbam/pkg/parser"
 	"github.com/ByteBam/thirftbam/pkg/utils/download"
 	"github.com/ByteBam/thirftbam/pkg/utils/interface_info"
+	"github.com/ByteBam/thirftbam/pkg/utils/url"
 	"github.com/bytedance/sonic"
 	"io"
 	"net/http"
-	"strings"
 	"sync"
 	"time"
 )
-
-var USER_ACCUSER_ACCESSION_KEY = "USER_ACCUSER_ACCESSION_KEY"
 
 type AnalyzeService interface {
 	GetUrl(ctx context.Context, request *v1.AnalyzeRequest) (string, error)
@@ -35,19 +33,28 @@ type analyzeService struct {
 }
 
 func (a *analyzeService) GetUrl(ctx context.Context, request *v1.AnalyzeRequest) (string, error) {
+	// get user's gitee ID by user ID
 	id, err := a.db.GetGiteeIDByUserID(ctx, request.UserId)
 	if err != nil {
 		return "", err
 	}
-	key := fmt.Sprintf("%s%d", USER_ACCUSER_ACCESSION_KEY, id)
-	ack, err := a.rdb.GetTokenByRDS(ctx, key)
+
+	// get the access token by user's gitee ID
+	ack, err := a.rdb.GetTokenByRDS(ctx, url.GetAccessToken(id))
 	if err != nil {
 		return "", err
 	}
+
+	// get the branch information by branch ID
 	branchInfo, err := a.db.GetBranchInfoByID(ctx, request.BranchId)
 	if err != nil {
 		return "", err
 	}
+
+	// check the branch status
+	// if the branch update time in mq is after the branch update time in db, the branch has been updated
+	// if the branch status is 1 or 2, the branch has been updated
+	// if the branch has been updated, return an error message
 	updateTime, err := time.Parse("2006-01-02T15:04:05", request.UpdateTime)
 	if err != nil {
 		return "", err
@@ -55,26 +62,21 @@ func (a *analyzeService) GetUrl(ctx context.Context, request *v1.AnalyzeRequest)
 	if updateTime.After(branchInfo.UpdateTime) || (branchInfo.UpdateTime.Equal(updateTime) && (branchInfo.Status == 1 || branchInfo.Status == 2)) {
 		return "", errors.New("the branch has been updated, please refresh the page")
 	}
-	if err = a.db.UpdateBranchStatusByID(ctx, request.BranchId, 1); err != nil {
+
+	// update the branch status to Loading
+	if err = a.db.UpdateBranchStatusByID(ctx, request.BranchId, repository.Loading); err != nil {
 		return "", err
 	}
+
+	// get store link by store ID
 	storeLink, err := a.db.GetStoreLinkByID(ctx, branchInfo.StoreID)
 	if err != nil {
 		return "", err
 	}
-	_, str, ok := strings.Cut(storeLink, "https://gitee.com/")
-	if !ok {
-		return "", errors.New("failed to get the correct url")
-	}
-	strs := strings.Split(str, "/")
-	owner := strs[0]
-	repo, _, ok := strings.Cut(strs[1], ".git")
-	if !ok {
-		return "", errors.New("failed to get the correct url")
-	}
-	// 拼接url
-	url := fmt.Sprintf("https://gitee.com/api/v5/repos/%s/%s/contents/%s?access_token=%s&ref=%s", owner, repo, "idl", ack, branchInfo.BranchName)
-	return url, nil
+
+	// generate the url struct and return the url
+	urlStruct := url.NewFilePath(storeLink, ack, branchInfo.BranchName)
+	return urlStruct.Parser(), nil
 }
 
 func (a *analyzeService) Loading(ctx context.Context, url string) (*[]download.IDL, error) {
@@ -165,7 +167,7 @@ func (a *analyzeService) Parser(ctx context.Context, idls []download.IDL, branch
 		return 0, err
 	}
 	if ast == nil {
-		return 0, fmt.Errorf("no services found")
+		return 0, fmt.Errorf("the idl file not found")
 	}
 	var count int
 	err = a.tm.Transaction(ctx, func(ctx context.Context) error {

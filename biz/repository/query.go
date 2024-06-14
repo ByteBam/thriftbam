@@ -6,6 +6,13 @@ import (
 	"github.com/ByteBam/thirftbam/biz/repository/query"
 )
 
+const (
+	Wait = iota
+	Loading
+	Success
+	Failed
+)
+
 type CaptchaRepository interface {
 	GetTokenByRDS(ctx context.Context, key string) (string, error)
 }

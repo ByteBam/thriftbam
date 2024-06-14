@@ -3,6 +3,7 @@ module github.com/ByteBam/thirftbam
 go 1.22.3
 
 require (
+	github.com/apache/rocketmq-client-go/v2 v2.1.2
 	github.com/bwmarrin/snowflake v0.3.0
 	github.com/bytedance/gopkg v0.0.0-20220413063733-65bf48ffb3a7
 	github.com/bytedance/sonic v1.8.1
@@ -25,7 +26,6 @@ require (
 require (
 	filippo.io/edwards25519 v1.1.0 // indirect
 	github.com/KyleBanks/depth v1.2.1 // indirect
-	github.com/apache/rocketmq-client-go/v2 v2.1.2 // indirect
 	github.com/apache/thrift v0.13.0 // indirect
 	github.com/bytedance/go-tagexpr/v2 v2.9.2 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
@@ -50,7 +50,6 @@ require (
 	github.com/josharian/intern v1.0.0 // indirect
 	github.com/json-iterator/go v1.1.12 // indirect
 	github.com/klauspost/cpuid/v2 v2.0.9 // indirect
-	github.com/konsorten/go-windows-terminal-sequences v1.0.3 // indirect
 	github.com/magiconair/properties v1.8.7 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
 	github.com/mitchellh/mapstructure v1.5.0 // indirect
@@ -81,7 +80,6 @@ require (
 	golang.org/x/net v0.25.0 // indirect
 	golang.org/x/sync v0.7.0 // indirect
 	golang.org/x/sys v0.21.0 // indirect
-	golang.org/x/term v0.21.0 // indirect
 	golang.org/x/text v0.16.0 // indirect
 	golang.org/x/tools v0.21.1-0.20240508182429-e35e4ccd0d2d // indirect
 	google.golang.org/protobuf v1.31.0 // indirect

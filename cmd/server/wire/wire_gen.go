@@ -46,7 +46,7 @@ func NewWire(viper2 *viper.Viper, logger *log.Logger) (*app.App, func(), error) 
 
 var repositorySet = wire.NewSet(repository.NewDB, repository.NewRedis, repository.NewRepository, repository.NewTransaction, repository.NewQueryRepository, repository.NewCaptchaRepository)
 
-var middlewareSet = wire.NewSet(middleware.NewRMQ)
+var middlewareSet = wire.NewSet(middleware.NewRMQConsumer)
 
 var serviceSet = wire.NewSet(service.NewService, service.NewAnalyzeService)
 

@@ -3,6 +3,7 @@ app:
   http:
     host: 152.136.135.225
     post: :8888
+
 log:
   log_level: debug
   encoding: console           # json or console
@@ -15,6 +16,7 @@ log:
 data:
   db:
     user:
+#      dsn: root:KingYen.2004@tcp(127.0.0.1:3306)/newbam?charset=utf8mb4&parseTime=True&loc=Local
       dsn: root:ndwmd1230@tcp(1.94.38.238:3306)/newbam?charset=utf8mb4&parseTime=True&loc=Local
 
   redis:
@@ -26,5 +28,9 @@ data:
 
 rocketmq:
   nameSrv: 118.178.229.137:9876
-  group: "slow_queue_consumer"
-  topic: "Slow_Update"
+  log: "./logs/rmq.log"
+  consumers:
+    - group: "slow_queue_consumer"
+      topic: "Slow_Update"
+    - group: "fast_queue_consumer"
+      topic: "Fast_Update"
