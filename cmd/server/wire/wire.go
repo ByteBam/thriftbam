@@ -6,7 +6,6 @@ package wire
 import (
 	"github.com/ByteBam/thirftbam/biz/app"
 	"github.com/ByteBam/thirftbam/biz/handler"
-	"github.com/ByteBam/thirftbam/biz/middleware"
 	"github.com/ByteBam/thirftbam/biz/repository"
 	"github.com/ByteBam/thirftbam/biz/server"
 	"github.com/ByteBam/thirftbam/biz/service"
@@ -25,10 +24,6 @@ var repositorySet = wire.NewSet(
 	repository.NewTransaction,
 	repository.NewQueryRepository,
 	repository.NewCaptchaRepository,
-)
-
-var middlewareSet = wire.NewSet(
-	middleware.NewRMQConsumer,
 )
 
 var serviceSet = wire.NewSet(

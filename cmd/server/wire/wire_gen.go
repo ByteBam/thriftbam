@@ -9,7 +9,6 @@ package wire
 import (
 	"github.com/ByteBam/thirftbam/biz/app"
 	"github.com/ByteBam/thirftbam/biz/handler"
-	"github.com/ByteBam/thirftbam/biz/middleware"
 	"github.com/ByteBam/thirftbam/biz/repository"
 	"github.com/ByteBam/thirftbam/biz/server"
 	"github.com/ByteBam/thirftbam/biz/service"
@@ -46,8 +45,6 @@ func NewWire(viper2 *viper.Viper, logger *log.Logger) (*app.App, func(), error) 
 
 var repositorySet = wire.NewSet(repository.NewDB, repository.NewRedis, repository.NewRepository, repository.NewTransaction, repository.NewQueryRepository, repository.NewCaptchaRepository)
 
-var middlewareSet = wire.NewSet(middleware.NewRMQConsumer)
-
 var serviceSet = wire.NewSet(service.NewService, service.NewAnalyzeService)
 
 var handlerSet = wire.NewSet(handler.NewHandler, handler.NewAnalyzeHandler)
@@ -59,5 +56,5 @@ func newApp(
 	mqServer *mq.Server,
 	conf *viper.Viper,
 ) *app.App {
-	return app.NewApp(app.WithServer(httpServer), app.WithServer(mqServer), app.WithName(conf.GetString("app.name")))
+	return app.NewApp(app.WithServer(httpServer, mqServer), app.WithName(conf.GetString("app.name")))
 }
